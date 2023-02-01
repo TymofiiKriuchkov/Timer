@@ -1,5 +1,6 @@
 package com.example.timer
 
+import android.content.SharedPreferences
 import com.example.timer.ui.main.MainViewModel
 import com.example.timer.ui.main.TimerState
 import org.junit.Assert
@@ -15,9 +16,13 @@ class MainViewModelTest {
     @Mock
     private lateinit var viewModel: MainViewModel
 
+    @Mock
+    private lateinit var sharedPreferences: SharedPreferences
+
+
     @Before
     fun setUp() {
-        viewModel = MainViewModel()
+        viewModel = MainViewModel(sharedPreferences)
     }
 
     @Test
@@ -29,6 +34,7 @@ class MainViewModelTest {
 
     @Test
     fun on_stop_clicked() {
+        //todo need to make access to sharedPreferences.edit()
         viewModel.timerState = TimerState.TIMER_STARTED
         viewModel.onStartStopClicked()
         Assert.assertEquals(viewModel.timerState, TimerState.TIMER_STOPPED)
@@ -36,6 +42,7 @@ class MainViewModelTest {
 
     @Test
     fun on_stop_text_changed() {
+        //todo need to make access to sharedPreferences.edit()
         viewModel.timerState = TimerState.TIMER_STARTED
         viewModel.onStartStopClicked()
         Assert.assertEquals(viewModel.timerStartStopButtonText.value, R.string.start)

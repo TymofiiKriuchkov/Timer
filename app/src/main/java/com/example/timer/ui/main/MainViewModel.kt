@@ -12,8 +12,9 @@ import javax.inject.Inject
 const val DEFAULT_TIMER_VALUE = "00:00:00"
 const val TIMER_FORMAT = "%02d:%02d:%02d"
 const val TIMER_STATE = "timer_state"
+const val SAVED_SECONDS = "saved_seconds"
 
-class MainViewModel @Inject constructor(val sharedPref : SharedPreferences) : ViewModel() {
+class MainViewModel @Inject constructor(private val sharedPref : SharedPreferences) : ViewModel() {
 
     private val _timerStartStopButtonText = MutableStateFlow(R.string.start)
     val timerStartStopButtonText: StateFlow<Int> = _timerStartStopButtonText
@@ -27,11 +28,14 @@ class MainViewModel @Inject constructor(val sharedPref : SharedPreferences) : Vi
 
     var timerState = TimerState.TIMER_STOPPED
 
-    init {
-        //todo restore timer state and seconds quantity
-
+    private fun initTimerState(){
         val timerStarted = sharedPref.getBoolean(TIMER_STATE, false)
-
+        if (timerStarted) {
+            timerState = TimerState.TIMER_STARTED
+            _timerStartStopButtonText.value = R.string.stop
+            secondsOfTimer = sharedPref.getLong(SAVED_SECONDS, 0L)
+            startTimer()
+        }
     }
 
     fun onStartStopClicked() {
@@ -49,8 +53,6 @@ class MainViewModel @Inject constructor(val sharedPref : SharedPreferences) : Vi
     }
 
     private fun startTimer() {
-        //todo get saved seconds
-
         timer = Timer()
         timer.scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
@@ -68,23 +70,27 @@ class MainViewModel @Inject constructor(val sharedPref : SharedPreferences) : Vi
     }
 
     private fun stopTimer() {
+        sharedPref.edit().putBoolean(TIMER_STATE, false)
+            .putLong(SAVED_SECONDS, 0L)
+            .commit()
         timer.cancel()
         timer.purge()
     }
 
     fun onResume() {
-        //todo restore state if timer was active
-
-        //
-        if (timerState == TimerState.TIMER_STARTED) {
-            startTimer()
-        }
+        //restore state if timer was active
+        initTimerState()
     }
 
     fun onPause() {
-        //todo save seconds and timer state
-
-        stopTimer()
+        //save seconds and timer state
+        if (timerState == TimerState.TIMER_STARTED) {
+            sharedPref.edit().putBoolean(TIMER_STATE, true)
+                .putLong(SAVED_SECONDS, secondsOfTimer)
+                .commit()
+        }
+        timer.cancel()
+        timer.purge()
     }
 
 }

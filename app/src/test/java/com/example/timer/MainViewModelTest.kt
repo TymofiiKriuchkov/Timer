@@ -38,14 +38,14 @@ class MainViewModelTest {
     fun on_stop_text_changed() {
         viewModel.timerState = TimerState.TIMER_STARTED
         viewModel.onStartStopClicked()
-        Assert.assertEquals(viewModel.timerButtonText.value, R.string.start)
+        Assert.assertEquals(viewModel.timerStartStopButtonText.value, R.string.start)
     }
 
     @Test
     fun on_start_text_changed() {
         viewModel.timerState = TimerState.TIMER_STOPPED
         viewModel.onStartStopClicked()
-        Assert.assertEquals(viewModel.timerButtonText.value, R.string.stop)
+        Assert.assertEquals(viewModel.timerStartStopButtonText.value, R.string.stop)
     }
 
 

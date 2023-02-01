@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.example.timer.R
 import com.example.timer.databinding.FragmentMainBinding
 import kotlinx.coroutines.launch
 
@@ -27,7 +26,6 @@ class MainFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
-        // TODO: Use the ViewModel
     }
 
     override fun onCreateView(
@@ -47,11 +45,29 @@ class MainFragment : Fragment() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                viewModel.timerButtonText.collect { timerButtonText ->
+                viewModel.timerStartStopButtonText.collect { timerButtonText ->
                     binding.btnStartStop.text = getString(timerButtonText)
                 }
             }
         }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                viewModel.timerValue.collect { timerValue ->
+                    binding.tvTimer.text = timerValue
+                }
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.onPause()
     }
 
     override fun onDestroyView() {

@@ -1,16 +1,19 @@
 package com.example.timer.ui.main
 
+import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import com.example.timer.R
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.util.*
+import javax.inject.Inject
 
 
 const val DEFAULT_TIMER_VALUE = "00:00:00"
 const val TIMER_FORMAT = "%02d:%02d:%02d"
+const val TIMER_STATE = "timer_state"
 
-class MainViewModel : ViewModel() {
+class MainViewModel @Inject constructor(val sharedPref : SharedPreferences) : ViewModel() {
 
     private val _timerStartStopButtonText = MutableStateFlow(R.string.start)
     val timerStartStopButtonText: StateFlow<Int> = _timerStartStopButtonText
@@ -25,7 +28,10 @@ class MainViewModel : ViewModel() {
     var timerState = TimerState.TIMER_STOPPED
 
     init {
-        //restore timer state and seconds quantity
+        //todo restore timer state and seconds quantity
+
+        val timerStarted = sharedPref.getBoolean(TIMER_STATE, false)
+
     }
 
     fun onStartStopClicked() {

@@ -47,11 +47,8 @@ class MainFragment : Fragment() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                viewModel.timerButtonState.collect { timerButtonState ->
-                    when (timerButtonState) {
-                        TimerState.TIMER_STARTED -> binding.btnStartStop.text = getString(R.string.stop)
-                        TimerState.TIMER_STOPPED -> binding.btnStartStop.text = getString(R.string.start)
-                    }
+                viewModel.timerButtonText.collect { timerButtonText ->
+                    binding.btnStartStop.text = getString(timerButtonText)
                 }
             }
         }

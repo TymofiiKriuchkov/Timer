@@ -1,20 +1,25 @@
 package com.example.timer.ui.main
 
 import androidx.lifecycle.ViewModel
+import com.example.timer.R
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class MainViewModel : ViewModel() {
 
-    private val _timerButtonState = MutableStateFlow(TimerState.TIMER_STOPPED)
-    val timerButtonState: StateFlow<TimerState> = _timerButtonState
+    private val _timerButtonText = MutableStateFlow(R.string.start)
+    val timerButtonText: StateFlow<Int> = _timerButtonText
+
+    var timerState = TimerState.TIMER_STOPPED
 
     fun onStartStopClicked() {
-        if (_timerButtonState.value == TimerState.TIMER_STOPPED) {
-            _timerButtonState.value = TimerState.TIMER_STARTED
+        if (timerState == TimerState.TIMER_STOPPED) {
+            timerState = TimerState.TIMER_STARTED
+            _timerButtonText.value = R.string.stop
             return
         }
-        _timerButtonState.value = TimerState.TIMER_STOPPED
+        timerState = TimerState.TIMER_STOPPED
+        _timerButtonText.value = R.string.start
     }
 
 }
